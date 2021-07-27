@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union
+from typing import Any, Dict
 import pydantic
 import requests
 from bs4 import BeautifulSoup
@@ -51,12 +51,12 @@ class PayLoad(pydantic.BaseModel):
 
 class ReservoirSession:
     def __init__(self) -> None:
-        self.session = requests.session()
-        self.url = "https://fhy.wra.gov.tw/ReservoirPage_2011/Statistics.aspx"
+        self._session = requests.session()
+        self._url = "https://fhy.wra.gov.tw/ReservoirPage_2011/Statistics.aspx"
 
     def fetch_aspx_state(self) -> None:
-        page = self.session.get("https://fhy.wra.gov.tw/ReservoirPage_2011/Statistics.aspx")
-        soup = BeautifulSoup(page.text, "html")
+        page = self._session.get(self._url)
+        soup = BeautifulSoup(page.text, features="lxml")
         self.view_state = soup.find(id="__VIEWSTATE")["value"]
         self.event_validation = soup.find(id="__EVENTVALIDATION")["value"]
         self.view_state_generator = soup.find(id="__VIEWSTATEGENERATOR")[
@@ -74,7 +74,7 @@ class ReservoirSession:
             view_state_generator=self.view_state_generator,
             event_validation=self.event_validation,
         )
-        post_result = self.session.post(self.url, data=payload.to_dict())
+        post_result = self._session.post(self._url, data=payload.to_dict())
         return post_result.text
 
 if __name__ == "__main__":
