@@ -51,7 +51,7 @@ class ReservoirSession:
         self.session = requests.session()
         self.url = "https://fhy.wra.gov.tw/ReservoirPage_2011/Statistics.aspx"
 
-    def fetch_state(self):
+    def fetch_aspx_state(self) -> None:
         page = self.session.get("https://fhy.wra.gov.tw/ReservoirPage_2011/Statistics.aspx")
         soup = BeautifulSoup(page.text, "html")
         self.view_state = soup.find(id="__VIEWSTATE")["value"]
@@ -77,6 +77,6 @@ class ReservoirSession:
 if __name__ == "__main__":
     import pandas as pd
     session = ReservoirSession()
-    session.fetch_state()
+    session.fetch_aspx_state()
     page = session.fetch_page(2020, 10, 5, 23, 10)
     print(pd.read_html(page)[0])
