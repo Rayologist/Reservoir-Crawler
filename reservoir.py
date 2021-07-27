@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Any, Dict, Union
 import pydantic
 import requests
 from bs4 import BeautifulSoup
@@ -26,7 +26,7 @@ class PayLoad(pydantic.BaseModel):
             50,
         }, f"{value} not in {[0, 10, 20, 30, 40, 50]}"
 
-    def to_dict(self) -> Dict[str, Union[str, int]]:
+    def to_dict(self) -> Dict[str, Any]:
         payload = {
             "ctl00$ctl02": "ctl00$cphMain$ctl00|ctl00$cphMain$btnQuery",
             "ctl00_ctl02_HiddenField": ";;AjaxControlToolkit, Version=3.0.20820.16598, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:zh-TW:707835dd-fa4b-41d1-89e7-6df5d518ffb5:411fea1c:865923e8:77c58d20:91bd373d:14b56adc:596d588c:8e72a662:acd642d2:269a19ae",
@@ -44,6 +44,9 @@ class PayLoad(pydantic.BaseModel):
             "__ASYNCPOST": True,
         }
         return payload
+    
+    class Config:
+        allow_mutation = False
 
 
 class ReservoirSession:
